@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
     // Timer variables
     private lateinit var tvTimer: TextView
+    private lateinit var waveformView: WaveformView
     private var startTime: Long = 0L
     private var elapsedTime: Long = 0L
     private var handler = Handler()
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         tvTimer = findViewById(R.id.tvTimer)
-        
+        waveformView = findViewById(R.id.waveformView)
 
         fileNameEditText = findViewById(R.id.editTextFileName)
         btnStop = findViewById(R.id.btnStop)
@@ -55,6 +56,16 @@ class MainActivity : AppCompatActivity() {
 
         if (isMicrophonePresent()) {
             getMicrophonePermission()
+        }
+    }
+
+    private val amplitudeRunnable: Runnable = object : Runnable {
+        override fun run() {
+            if (mediaRecorder != null) {
+                val maxAmplitude = mediaRecorder?.maxAmplitude?.toFloat() ?: 0f
+                waveformView.addAmplitude(maxAmplitude)
+            }
+            handler.postDelayed(this, 100)
         }
     }
 
@@ -78,6 +89,7 @@ class MainActivity : AppCompatActivity() {
             isRecordingStopped = false
             startTime = System.currentTimeMillis()
             handler.post(timerRunnable)
+            handler.post(amplitudeRunnable)
             Toast.makeText(this, "Recording started", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -91,6 +103,7 @@ class MainActivity : AppCompatActivity() {
             }
             isRecordingStopped = true
             handler.removeCallbacks(timerRunnable)
+            handler.removeCallbacks(amplitudeRunnable)
             elapsedTime += System.currentTimeMillis() - startTime
             btnStop.visibility = View.GONE
             btnResume.visibility = View.VISIBLE
@@ -116,6 +129,7 @@ class MainActivity : AppCompatActivity() {
             isRecordingStopped = false
             startTime = System.currentTimeMillis()
             handler.post(timerRunnable)
+            handler.post(amplitudeRunnable)
             btnResume.visibility = View.GONE
             btnStop.visibility = View.VISIBLE
             Toast.makeText(this, "Recording resumed", Toast.LENGTH_LONG).show()
