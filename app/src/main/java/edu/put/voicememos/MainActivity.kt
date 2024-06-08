@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -29,15 +30,18 @@ class MainActivity : AppCompatActivity() {
     private var currentFileName: String? = null
     private var tempFilePath: String? = null
 
-    //obsługa timera
+    // Timer variables
     private lateinit var tvTimer: TextView
-    private var seconds = 0
-    private var running = false
-    private var wasRunning = false
+    private var startTime: Long = 0L
+    private var elapsedTime: Long = 0L
+    private var handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        tvTimer = findViewById(R.id.tvTimer)
+        
 
         fileNameEditText = findViewById(R.id.editTextFileName)
         btnStop = findViewById(R.id.btnStop)
@@ -53,6 +57,7 @@ class MainActivity : AppCompatActivity() {
             getMicrophonePermission()
         }
     }
+
 
     fun btnRecordPressed(v: View) {
         tempFilePath = getTempRecordingFilePath()
@@ -71,6 +76,8 @@ class MainActivity : AppCompatActivity() {
                 start()
             }
             isRecordingStopped = false
+            startTime = System.currentTimeMillis()
+            handler.post(timerRunnable)
             Toast.makeText(this, "Recording started", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -83,6 +90,8 @@ class MainActivity : AppCompatActivity() {
                 stop()
             }
             isRecordingStopped = true
+            handler.removeCallbacks(timerRunnable)
+            elapsedTime += System.currentTimeMillis() - startTime
             btnStop.visibility = View.GONE
             btnResume.visibility = View.VISIBLE
             btnResume.setImageResource(R.drawable.ic_resume)
@@ -105,6 +114,8 @@ class MainActivity : AppCompatActivity() {
                 start()
             }
             isRecordingStopped = false
+            startTime = System.currentTimeMillis()
+            handler.post(timerRunnable)
             btnResume.visibility = View.GONE
             btnStop.visibility = View.VISIBLE
             Toast.makeText(this, "Recording resumed", Toast.LENGTH_LONG).show()
@@ -190,6 +201,18 @@ class MainActivity : AppCompatActivity() {
         val musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
         val tempFile = File(musicDirectory, "tempRecording.mp3")
         return tempFile.path
+    }
+
+    private val timerRunnable: Runnable = object : Runnable {
+        override fun run() {
+            val currentTime = System.currentTimeMillis()
+            val millis = elapsedTime + (currentTime - startTime)
+            val minutes = (millis / 60000).toInt() % 60
+            val seconds = (millis / 1000).toInt() % 60
+            val milliseconds = (millis % 1000) / 10
+            tvTimer.text = String.format("%02d:%02d:%02d", minutes, seconds, milliseconds)
+            handler.postDelayed(this, 10)
+        }
     }
 
     override fun onDestroy() {
