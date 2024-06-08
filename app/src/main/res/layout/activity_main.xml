@@ -6,72 +6,112 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--        android:id="@+id/recordAudioButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="177dp"-->
+    <!--        android:layout_marginEnd="178dp"-->
+    <!--        android:layout_marginBottom="115dp"-->
+    <!--        android:clickable="true"-->
+    <!--        android:contentDescription="@string/start_recording"-->
+    <!--        app:backgroundTint="#D33535"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:srcCompat="@android:drawable/ic_btn_speak_now" />
+
+    -->
     <EditText
         android:id="@+id/editTextFileName"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="40dp"
         android:hint="Enter file name"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnStop"
-        app:layout_constraintEnd_toStartOf="@id/btnRecord" />
-
-    <Button
-        android:id="@+id/btnRecord"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="336dp"
-        android:text="Record"
-        app:layout_constraintEnd_toStartOf="@id/btnStop"
-        android:onClick="btnRecordPressed"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toTopOf="@+id/tvTimer"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="336dp"
-        android:text="Stop"
-        android:onClick="btnStopPressed"
-        app:layout_constraintEnd_toStartOf="@id/btnPlay"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/btnRecord"
-        app:layout_constraintTop_toTopOf="parent" />
-    <Button
-        android:id="@+id/btnResume"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="336dp"
-        android:text="Resume"
-        android:visibility="gone"
-        android:onClick="btnResumePressed"
-        app:layout_constraintEnd_toStartOf="@id/btnPlay"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/btnRecord"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnPlay"
+    <TextView
+        android:id="@+id/tvTimer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="336dp"
-        android:text="Play"
-        android:onClick="btnPlayPressed"
+        android:layout_marginBottom="408dp"
+        android:text="00:00:00"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@id/btnStop"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="40dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnPlay" />
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="80dp">
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="@dimen/btn_size"
+            android:onClick="btnDeletePressed"
+            android:src="@drawable/ic_delete_disabled"
+            android:background="@drawable/ic_ripple"
+            android:layout_height="@dimen/btn_size"
+            android:contentDescription="btnDelete"/>
+
+        <ImageButton
+            android:id="@+id/btnRecord"
+            android:layout_width="66dp"
+            android:background="@drawable/ic_record"
+            android:onClick="btnRecordPressed"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_height="66dp"
+            android:contentDescription="btnRecord"/>
+        <ImageButton
+            android:id="@+id/btnStop"
+            android:layout_width="66dp"
+            android:visibility="gone"
+            android:background="@drawable/ic_record"
+            android:onClick="btnStopPressed"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_height="66dp"
+            android:contentDescription="btnStop"/>
+
+        <ImageButton
+            android:id="@+id/btnResume"
+            android:layout_width="66dp"
+            android:visibility="gone"
+            android:background="@drawable/ic_record"
+            android:onClick="btnResumePressed"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:layout_height="66dp"
+            android:contentDescription="btnResume"/>
+
+        <ImageButton
+            android:id="@+id/btnList"
+            android:layout_width="@dimen/btn_size"
+            android:src="@drawable/ic_list"
+            android:background="@drawable/ic_ripple"
+            android:layout_height="@dimen/btn_size"
+            android:contentDescription="btnList"/>
+
+        <ImageButton
+            android:id="@+id/btnSave"
+            android:visibility="gone"
+            android:layout_width="@dimen/btn_size"
+            android:onClick="btnSavePressed"
+            android:src="@drawable/ic_done"
+            android:background="@drawable/ic_ripple"
+            android:layout_height="@dimen/btn_size"/>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
