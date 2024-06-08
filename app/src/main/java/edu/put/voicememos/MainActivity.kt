@@ -138,6 +138,44 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun btnDeletePressed(v: View) {
+        try {
+            mediaRecorder?.apply {
+                stop()
+                release()
+            }
+            mediaRecorder = null
+            handler.removeCallbacks(timerRunnable)
+            handler.removeCallbacks(amplitudeRunnable)
+
+            // Delete the temporary file
+            val tempFile = File(tempFilePath ?: return)
+            if (tempFile.exists()) {
+                tempFile.delete()
+            }
+
+            // Reset variables
+            isRecordingStopped = false
+            currentFileName = null
+            tempFilePath = null
+            elapsedTime = 0L
+            tvTimer.text = "00:00:00"
+            waveformView.clearAmplitudes()
+
+            // Update UI
+            btnStop.visibility = View.GONE
+            btnResume.visibility = View.GONE
+            btnSave.visibility = View.GONE
+            btnRecord.visibility = View.VISIBLE
+            btnList.visibility = View.VISIBLE
+            fileNameEditText.visibility = View.GONE
+
+            Toast.makeText(this, "Recording deleted", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     fun btnSavePressed(v: View) {
         if (!isRecordingStopped) {
             Toast.makeText(this, "Please stop the recording first", Toast.LENGTH_LONG).show()

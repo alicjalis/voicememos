@@ -6,22 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-    <!--        android:id="@+id/recordAudioButton"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="177dp"-->
-    <!--        android:layout_marginEnd="178dp"-->
-    <!--        android:layout_marginBottom="115dp"-->
-    <!--        android:clickable="true"-->
-    <!--        android:contentDescription="@string/start_recording"-->
-    <!--        app:backgroundTint="#D33535"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:srcCompat="@android:drawable/ic_btn_speak_now" />
-
-    -->
     <EditText
         android:id="@+id/editTextFileName"
         android:layout_width="0dp"

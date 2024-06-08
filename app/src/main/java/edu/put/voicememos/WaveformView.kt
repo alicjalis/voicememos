@@ -60,4 +60,10 @@ class WaveformView(context: Context?, attrs: AttributeSet?): View(context, attrs
         }
     }
 
+    fun clearAmplitudes() {
+        amplitudes.clear()
+        spikes.clear()
+        invalidate()
+    }
+
 }
