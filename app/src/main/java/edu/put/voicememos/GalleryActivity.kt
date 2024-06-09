@@ -2,6 +2,7 @@ package edu.put.voicememos
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
@@ -10,7 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class GalleryActivity : AppCompatActivity() {
+class GalleryActivity : AppCompatActivity(), OnItemClickListener {
 
     private lateinit var records: ArrayList<AudioRecord>
     private lateinit var mAdapter: Adapter
@@ -22,9 +23,8 @@ class GalleryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_gallery)
 
         records = ArrayList()
-        mAdapter = Adapter(records)
+        mAdapter = Adapter(records, this)
 
-        // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerview)
         recyclerView.apply {
             adapter = mAdapter
@@ -50,5 +50,13 @@ class GalleryActivity : AppCompatActivity() {
                 mAdapter.notifyDataSetChanged()
             }
         }
+    }
+
+    override fun onItemClickListener(position: Int) {
+        Toast.makeText(this,"Simple click", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onItemLongClickListener(position: Int) {
+        Toast.makeText(this,"Long click", Toast.LENGTH_SHORT).show()
     }
 }
