@@ -16,6 +16,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val MICROPHONE_PERMISSION_CODE = 200
@@ -80,6 +82,10 @@ class MainActivity : AppCompatActivity() {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             bottomSheetBG.visibility = View.GONE
             fileNameEditText.visibility = View.GONE
+
+            // Hide the keyboard
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(filenameInput.windowToken, 0)
         }
 
         btnOk.setOnClickListener {
@@ -104,8 +110,10 @@ class MainActivity : AppCompatActivity() {
             // Hide the keyboard
             val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(filenameInput.windowToken, 0)
+        }
 
-
+        filenameInput.setOnClickListener {
+            filenameInput.selectAll()
         }
 
     }
@@ -236,9 +244,13 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Please stop the recording first", Toast.LENGTH_LONG).show()
             return
         }
+
+        // Generate a default file name based on the current date and time
+        val defaultFileName = generateDefaultFileName()
+
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetBG.visibility = View.VISIBLE
-        filenameInput.text?.clear() // Clear previous input
+        filenameInput.setText(defaultFileName) // Set the default file name
     }
 
     fun btnPlayPressed(v: View) {
@@ -318,6 +330,12 @@ class MainActivity : AppCompatActivity() {
             tvTimer.text = String.format("%02d:%02d:%02d", minutes, seconds, milliseconds)
             handler.postDelayed(this, 10)
         }
+    }
+
+    private fun generateDefaultFileName(): String {
+        val dateFormat = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+        val date = Date()
+        return "recording_${dateFormat.format(date)}"
     }
 
     override fun onDestroy() {
