@@ -14,8 +14,14 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.room.Room
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.ObjectOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -47,6 +53,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnOk: Button
     private lateinit var filenameInput: EditText
 
+    private lateinit var db : AppDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -77,6 +85,12 @@ class MainActivity : AppCompatActivity() {
         if (isMicrophonePresent()) {
             getMicrophonePermission()
         }
+
+        db = Room.databaseBuilder(
+            this,
+            AppDatabase::class.java,
+            "audioRecords"
+        ).build()
 
         btnCancel.setOnClickListener {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -251,7 +265,44 @@ class MainActivity : AppCompatActivity() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         bottomSheetBG.visibility = View.VISIBLE
         filenameInput.setText(defaultFileName) // Set the default file name
+
+        val dirPath = getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath
+        val newFilename = filenameInput.text.toString()
+
+        if (dirPath == null) {
+            Toast.makeText(this, "Error: Unable to access music directory", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val filePath = "$dirPath/$newFilename.mp3"
+        val ampsPath = "$dirPath/$newFilename"
+        val timestamp = Date().time
+
+        // Ensure amplitudes and duration are defined
+        val amplitudes = waveformView.getAmplitudes()
+        val duration = elapsedTime // Assuming elapsedTime is in milliseconds
+
+        try {
+            FileOutputStream(ampsPath).use { fos ->
+                ObjectOutputStream(fos).use { out ->
+                    out.writeObject(amplitudes)
+                }
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Toast.makeText(this, "Error saving amplitudes", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        // Create a new AudioRecord and save it to the database
+        val record = AudioRecord(newFilename, filePath, timestamp, duration.toString(), ampsPath)
+
+        GlobalScope.launch {
+            db.audioRecordDao().insert(record)
+        }
+        
     }
+
 
     fun btnPlayPressed(v: View) {
         val fileName = fileNameEditText.text.toString()

@@ -66,4 +66,8 @@ class WaveformView(context: Context?, attrs: AttributeSet?): View(context, attrs
         invalidate()
     }
 
+    fun getAmplitudes(): List<Float> {
+        return amplitudes.toList()
+    }
+
 }
