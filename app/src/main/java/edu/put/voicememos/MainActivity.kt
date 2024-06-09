@@ -308,26 +308,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
-    fun btnPlayPressed(v: View) {
-        val fileName = fileNameEditText.text.toString()
-        if (fileName.isEmpty()) {
-            Toast.makeText(this, "Please enter a file name", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        try {
-            mediaPlayer = MediaPlayer().apply {
-                setDataSource(getRecordingFilePath(fileName))
-                prepare()
-                start()
-                Toast.makeText(this@MainActivity, "Playing recording", Toast.LENGTH_LONG).show()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     private fun isMicrophonePresent(): Boolean {
         return packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
     }
