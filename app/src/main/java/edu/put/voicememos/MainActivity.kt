@@ -2,6 +2,7 @@ package edu.put.voicememos
 
 import android.Manifest
 import android.content.ContextWrapper
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
@@ -128,6 +129,10 @@ class MainActivity : AppCompatActivity() {
 
         filenameInput.setOnClickListener {
             filenameInput.selectAll()
+        }
+
+        btnList.setOnClickListener{
+            startActivity(Intent(this, GalleryActivity::class.java))
         }
 
     }
@@ -300,7 +305,7 @@ class MainActivity : AppCompatActivity() {
         GlobalScope.launch {
             db.audioRecordDao().insert(record)
         }
-        
+
     }
 
 
