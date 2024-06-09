@@ -1,108 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
-    <EditText
-        android:id="@+id/editTextFileName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="40dp"
-        android:hint="Enter file name"
-        app:layout_constraintBottom_toTopOf="@+id/tvTimer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <TextView
-        android:id="@+id/tvTimer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="00:00:00"
-        android:textSize="50sp"
-        app:layout_constraintBottom_toTopOf="@+id/waveformView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="30dp"/>
-
-    <edu.put.voicememos.WaveformView
-        android:id="@+id/waveformView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="300px"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
+        <EditText
+            android:id="@+id/editTextFileName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginBottom="40dp"
+            android:hint="Enter file name"
+            app:layout_constraintBottom_toTopOf="@+id/tvTimer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00:00"
+            android:textSize="50sp"
+            app:layout_constraintBottom_toTopOf="@+id/waveformView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="30dp"/>
+
+        <edu.put.voicememos.WaveformView
+            android:id="@+id/waveformView"
+            android:layout_width="match_parent"
+            android:layout_height="300px"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="80dp">
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="@dimen/btn_size"
+                android:onClick="btnDeletePressed"
+                android:src="@drawable/ic_delete_disabled"
+                android:background="@drawable/ic_ripple"
+                android:layout_height="@dimen/btn_size"
+                android:contentDescription="btnDelete"/>
+
+            <ImageButton
+                android:id="@+id/btnRecord"
+                android:layout_width="66dp"
+                android:background="@drawable/ic_record"
+                android:onClick="btnRecordPressed"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_height="66dp"
+                android:contentDescription="btnRecord"/>
+            <ImageButton
+                android:id="@+id/btnStop"
+                android:layout_width="66dp"
+                android:visibility="gone"
+                android:background="@drawable/ic_record"
+                android:onClick="btnStopPressed"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_height="66dp"
+                android:contentDescription="btnStop"/>
+
+            <ImageButton
+                android:id="@+id/btnResume"
+                android:layout_width="66dp"
+                android:visibility="gone"
+                android:background="@drawable/ic_record"
+                android:onClick="btnResumePressed"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_height="66dp"
+                android:contentDescription="btnResume"/>
+
+            <ImageButton
+                android:id="@+id/btnList"
+                android:layout_width="@dimen/btn_size"
+                android:src="@drawable/ic_list"
+                android:background="@drawable/ic_ripple"
+                android:layout_height="@dimen/btn_size"
+                android:contentDescription="btnList"/>
+
+            <ImageButton
+                android:id="@+id/btnSave"
+                android:visibility="gone"
+                android:layout_width="@dimen/btn_size"
+                android:onClick="btnSavePressed"
+                android:src="@drawable/ic_done"
+                android:background="@drawable/ic_ripple"
+                android:layout_height="@dimen/btn_size"/>
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/bottomSheetBG"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="80dp">
-        <ImageButton
-            android:id="@+id/btnDelete"
-            android:layout_width="@dimen/btn_size"
-            android:onClick="btnDeletePressed"
-            android:src="@drawable/ic_delete_disabled"
-            android:background="@drawable/ic_ripple"
-            android:layout_height="@dimen/btn_size"
-            android:contentDescription="btnDelete"/>
+        android:layout_height="match_parent"
+        android:background="@color/opaqueBG"/>
 
-        <ImageButton
-            android:id="@+id/btnRecord"
-            android:layout_width="66dp"
-            android:background="@drawable/ic_record"
-            android:onClick="btnRecordPressed"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_height="66dp"
-            android:contentDescription="btnRecord"/>
-        <ImageButton
-            android:id="@+id/btnStop"
-            android:layout_width="66dp"
-            android:visibility="gone"
-            android:background="@drawable/ic_record"
-            android:onClick="btnStopPressed"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_height="66dp"
-            android:contentDescription="btnStop"/>
+    <include layout="@layout/bottom_popup"/>
 
-        <ImageButton
-            android:id="@+id/btnResume"
-            android:layout_width="66dp"
-            android:visibility="gone"
-            android:background="@drawable/ic_record"
-            android:onClick="btnResumePressed"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_height="66dp"
-            android:contentDescription="btnResume"/>
-
-        <ImageButton
-            android:id="@+id/btnList"
-            android:layout_width="@dimen/btn_size"
-            android:src="@drawable/ic_list"
-            android:background="@drawable/ic_ripple"
-            android:layout_height="@dimen/btn_size"
-            android:contentDescription="btnList"/>
-
-        <ImageButton
-            android:id="@+id/btnSave"
-            android:visibility="gone"
-            android:layout_width="@dimen/btn_size"
-            android:onClick="btnSavePressed"
-            android:src="@drawable/ic_done"
-            android:background="@drawable/ic_ripple"
-            android:layout_height="@dimen/btn_size"/>
-    </LinearLayout>
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

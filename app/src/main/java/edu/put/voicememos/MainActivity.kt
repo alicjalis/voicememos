@@ -9,10 +9,12 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -37,6 +39,12 @@ class MainActivity : AppCompatActivity() {
     private var elapsedTime: Long = 0L
     private var handler = Handler()
 
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
+    private lateinit var bottomSheetBG: View
+    private lateinit var btnCancel: Button
+    private lateinit var btnOk: Button
+    private lateinit var filenameInput: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -51,12 +59,55 @@ class MainActivity : AppCompatActivity() {
         btnDelete = findViewById(R.id.btnDelete)
         btnList = findViewById(R.id.btnList)
         btnRecord = findViewById(R.id.btnRecord)
+        val bottomSheet: LinearLayout = findViewById(R.id.bottomSheet)
+        bottomSheetBG = findViewById(R.id.bottomSheetBG)
+
+
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        bottomSheetBehavior.peekHeight = 0
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        filenameInput = findViewById(R.id.filenameInput)
+        btnCancel = findViewById(R.id.btnCancel)
+        btnOk = findViewById(R.id.btnOk)
 
         fileNameEditText.visibility = View.GONE // Initially hide the file name input field
 
         if (isMicrophonePresent()) {
             getMicrophonePermission()
         }
+
+        btnCancel.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetBG.visibility = View.GONE
+            fileNameEditText.visibility = View.GONE
+        }
+
+        btnOk.setOnClickListener {
+            val fileName = filenameInput.text.toString()
+            if (fileName.isEmpty()) {
+                Toast.makeText(this, "Please enter a file name", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            saveRecording(fileName)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            bottomSheetBG.visibility = View.GONE
+            fileNameEditText.visibility = View.GONE
+
+            btnStop.visibility = View.GONE
+            btnResume.visibility = View.GONE
+            btnSave.visibility = View.GONE
+            btnRecord.visibility = View.VISIBLE
+            btnList.visibility = View.VISIBLE
+            tvTimer.text = "00:00:00"
+            waveformView.clearAmplitudes()
+
+            // Hide the keyboard
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(filenameInput.windowToken, 0)
+
+
+        }
+
     }
 
     private val amplitudeRunnable: Runnable = object : Runnable {
@@ -88,6 +139,7 @@ class MainActivity : AppCompatActivity() {
             }
             isRecordingStopped = false
             startTime = System.currentTimeMillis()
+            elapsedTime = 0L
             handler.post(timerRunnable)
             handler.post(amplitudeRunnable)
             Toast.makeText(this, "Recording started", Toast.LENGTH_LONG).show()
@@ -140,9 +192,12 @@ class MainActivity : AppCompatActivity() {
 
     fun btnDeletePressed(v: View) {
         try {
-            mediaRecorder?.apply {
-                stop()
-                release()
+            // Check if mediaRecorder is initialized and is recording
+            if (mediaRecorder != null && !isRecordingStopped) {
+                mediaRecorder?.apply {
+                    stop()
+                    release()
+                }
             }
             mediaRecorder = null
             handler.removeCallbacks(timerRunnable)
@@ -181,29 +236,9 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Please stop the recording first", Toast.LENGTH_LONG).show()
             return
         }
-
-        fileNameEditText.visibility = View.VISIBLE // Show the file name input field
-        val fileName = fileNameEditText.text.toString()
-        if (fileName.isEmpty()) {
-            Toast.makeText(this, "Please enter a file name", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        currentFileName = fileName
-        try {
-            val finalFilePath = getRecordingFilePath(currentFileName!!)
-            val tempFile = File(tempFilePath!!)
-            val finalFile = File(finalFilePath)
-
-            tempFile.copyTo(finalFile, overwrite = true)
-            tempFile.delete() // Remove the temporary file
-
-            mediaRecorder?.release()
-            mediaRecorder = null
-            Toast.makeText(this, "Recording saved", Toast.LENGTH_LONG).show()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetBG.visibility = View.VISIBLE
+        filenameInput.text?.clear() // Clear previous input
     }
 
     fun btnPlayPressed(v: View) {
@@ -253,6 +288,24 @@ class MainActivity : AppCompatActivity() {
         val musicDirectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
         val tempFile = File(musicDirectory, "tempRecording.mp3")
         return tempFile.path
+    }
+
+    private fun saveRecording(fileName: String) {
+        currentFileName = fileName
+        try {
+            val finalFilePath = getRecordingFilePath(currentFileName!!)
+            val tempFile = File(tempFilePath!!)
+            val finalFile = File(finalFilePath)
+
+            tempFile.copyTo(finalFile, overwrite = true)
+            tempFile.delete() // Remove the temporary file
+
+            mediaRecorder?.release()
+            mediaRecorder = null
+            Toast.makeText(this, "Recording saved", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private val timerRunnable: Runnable = object : Runnable {
