@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Recording?"
+        android:text="Save Record?"
         android:layout_marginTop="20dp"
         android:textSize="26sp"
         android:textAlignment="center"/>
