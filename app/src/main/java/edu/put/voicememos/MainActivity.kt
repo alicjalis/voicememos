@@ -350,6 +350,40 @@ class MainActivity : AppCompatActivity() {
 
             mediaRecorder?.release()
             mediaRecorder = null
+
+            // Zapisywanie rekordu w bazie danych
+            val dirPath = getExternalFilesDir(Environment.DIRECTORY_MUSIC)?.absolutePath
+            if (dirPath == null) {
+                Toast.makeText(this, "Error: Unable to access music directory", Toast.LENGTH_LONG).show()
+                return
+            }
+
+            val ampsPath = "$dirPath/$fileName"
+            val timestamp = Date().time
+
+            // Ensure amplitudes and duration are defined
+            val amplitudes = waveformView.getAmplitudes()
+            val duration = elapsedTime // Assuming elapsedTime is in milliseconds
+
+            try {
+                FileOutputStream(ampsPath).use { fos ->
+                    ObjectOutputStream(fos).use { out ->
+                        out.writeObject(amplitudes)
+                    }
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(this, "Error saving amplitudes", Toast.LENGTH_LONG).show()
+                return
+            }
+
+            // Create a new AudioRecord and save it to the database
+            val record = AudioRecord(fileName, finalFilePath, timestamp, duration.toString(), ampsPath)
+
+            GlobalScope.launch {
+                db.audioRecordDao().insert(record)
+            }
+
             Toast.makeText(this, "Recording saved", Toast.LENGTH_LONG).show()
         } catch (e: Exception) {
             e.printStackTrace()
