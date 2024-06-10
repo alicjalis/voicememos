@@ -13,6 +13,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.postDelayed
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.chip.Chip
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.time.Duration
 
 class AudioPlayerActivity : AppCompatActivity() {
 
@@ -20,6 +23,10 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private lateinit var toolbar: MaterialToolbar
     private lateinit var tvFilename: TextView
+
+    private lateinit var tvTrackProgress: TextView
+    private lateinit var tvTrackDuration: TextView
+
 
     private lateinit var btnPlay : ImageButton
     private lateinit var btnBackward : ImageButton
@@ -46,6 +53,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar)
         tvFilename = findViewById(R.id.tvFilename)
 
+        tvTrackDuration = findViewById(R.id.tvTrackDuration)
+        tvTrackProgress = findViewById(R.id.tvTrackProgress)
+
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -61,6 +71,8 @@ class AudioPlayerActivity : AppCompatActivity() {
             prepare()
         }
 
+        tvTrackDuration.text = dateFormat(mediaPlayer.duration)
+
 
         btnBackward = findViewById(R.id.btnBackward)
         btnForward = findViewById(R.id.btnForward)
@@ -71,6 +83,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         handler = Handler(Looper.getMainLooper())
         runnable = Runnable {
             seekBar.progress = mediaPlayer.currentPosition
+            tvTrackProgress.text = dateFormat(mediaPlayer.currentPosition)
             handler.postDelayed(runnable, delay)
         }
 
@@ -137,5 +150,19 @@ class AudioPlayerActivity : AppCompatActivity() {
         mediaPlayer.stop()
         mediaPlayer.release()
         handler.removeCallbacks(runnable)
+    }
+
+    private fun dateFormat(duration: Int): String {
+        var d = duration/1000
+        var s = d%60
+        var m = (d/60 % 60)
+        var h = ((d - m*60)/360).toInt()
+
+        val f: NumberFormat = DecimalFormat("00")
+        var str = "$m:${f.format(s)}"
+
+        if(h>0)
+            str = "$h:$str"
+        return str
     }
 }
