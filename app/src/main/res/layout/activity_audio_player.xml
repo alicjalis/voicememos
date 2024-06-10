@@ -6,6 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".AudioPlayerActivity">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="">
+        <TextView
+            android:id="@+id/tvFilename"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginEnd="46dp"/>
+    </com.google.android.material.appbar.MaterialToolbar>
+
     <com.google.android.material.chip.Chip
         android:id="@+id/chip"
         android:layout_width="60dp"
