@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "536424281737",
+    "project_id": "voicememos-fefd8",
+    "storage_bucket": "voicememos-fefd8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:536424281737:android:41472d7f0eb4810cecb858",
+        "android_client_info": {
+          "package_name": "edu.put.voicememos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDb1PqZY2nJiwq22dxXqkSjNRgq9i_jIrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
